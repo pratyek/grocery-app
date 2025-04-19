@@ -1,70 +1,172 @@
-# Getting Started with Create React App
+# Vegetable Ordering System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack web application for ordering fresh vegetables with user authentication, shopping cart functionality, order management, and admin capabilities.
 
-## Available Scripts
+## 🌱 Overview
 
-In the project directory, you can run:
+This application allows users to browse and order vegetables online. It features a user-friendly interface, secure authentication, order tracking, and an admin panel for managing products and orders.
 
-### `npm start`
+## ✨ Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### User Features
+- **User Authentication**: Register, login, and logout functionality
+- **Product Browsing**: View all available vegetables with details
+- **Shopping Cart**: Add items, adjust quantities, and view total
+- **Order Placement**: Secure checkout with delivery details
+- **Order Tracking**: Monitor order status (Pending, In Progress, Delivered)
+- **Email Notifications**: Receive updates when order status changes
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Admin Features
+- **Product Management**: Add, edit, and delete products
+- **Order Management**: View all customer orders
+- **Status Updates**: Change order status with automated customer notifications
+- **User Management**: View registered users
 
-### `npm test`
+## 🛠️ Tech Stack
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Frontend
+- React.js
+- Context API for state management
+- Axios for API requests
+- CSS for styling
 
-### `npm run build`
+### Backend
+- Node.js with Express
+- MongoDB with Mongoose for database
+- JWT for authentication
+- Bcrypt.js for password hashing
+- Nodemailer for email notifications
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 📋 Prerequisites
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Node.js (v14.0.0 or later)
+- MongoDB account
+- npm or yarn
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🚀 Installation & Setup
 
-### `npm run eject`
+### Clone the repository
+```bash
+git clone https://github.com/pratyek/grocery-app.git
+cd grocery-app
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Backend setup
+```bash
+# Navigate to server directory (if applicable)
+cd server
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# Install dependencies
+npm install
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+# Create .env file with the following variables
+# PORT=5000
+# MONGODB_URI=mongodb+srv://yourusername:yourpassword@cluster0.example.mongodb.net/vegetable_ordering_db
+# JWT_SECRET=your_jwt_secret_key
+# EMAIL_USER=your_email@gmail.com
+# EMAIL_PASSWORD=your_app_password
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+# Start the server
+npm start
+```
 
-## Learn More
+### Frontend setup
+```bash
+# Navigate to client directory (if applicable)
+cd ../client
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+# Install dependencies
+npm install
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+# Start the client
+npm start
+```
 
-### Code Splitting
+## 📊 Database Schema
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### User
+- `username`: String (unique)
+- `email`: String (unique)
+- `password`: String (hashed)
+- `role`: String (buyer or admin)
 
-### Analyzing the Bundle Size
+### Product
+- `name`: String
+- `description`: String
+- `price`: Number
+- `image`: String (URL)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Order
+- `orderId`: String (unique)
+- `userId`: ObjectId (reference to User)
+- `username`: String
+- `products`: Array of product objects
+- `totalAmount`: Number
+- `status`: String (Pending, In Progress, Delivered)
+- `deliveryDetails`: Object (address, phone)
+- `createdAt`: Date
 
-### Making a Progressive Web App
+## 🌐 API Endpoints
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Authentication
+- `POST /api/register`: Register a new user
+- `POST /api/login`: Login a user
+- `POST /api/logout`: Logout a user
+- `GET /api/user`: Get current user details
 
-### Advanced Configuration
+### Products
+- `GET /api/products`: Get all products
+- `POST /api/products`: Add a new product (admin only)
+- `DELETE /api/products/:id`: Delete a product (admin only)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Orders
+- `POST /api/orders`: Create a new order
+- `GET /api/orders`: Get current user's orders
+- `GET /api/admin/orders`: Get all orders (admin only)
+- `PUT /api/orders/:id/status`: Update order status (admin only)
 
-### Deployment
+## 📷 Screenshots
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+*[Add screenshots of your application here]*
 
-### `npm run build` fails to minify
+## ⚙️ Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Email Notifications
+This application uses Nodemailer to send order status update emails to customers. To configure email functionality:
+
+1. Set up your email provider (Gmail recommended for testing)
+2. For Gmail, generate an App Password:
+   - Go to Google Account > Security
+   - Enable 2-Step Verification
+   - Create an App Password for the application
+3. Add credentials to your .env file
+
+## 📈 Future Improvements
+
+- Mobile app version
+- Payment gateway integration
+- Product categories and search functionality
+- User reviews and ratings
+- Delivery tracking with maps integration
+- Subscription model for regular deliveries
+
+## 👥 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📜 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- [Node.js](https://nodejs.org/)
+- [React](https://reactjs.org/)
+- [MongoDB](https://www.mongodb.com/)
+- [Express](https://expressjs.com/)
