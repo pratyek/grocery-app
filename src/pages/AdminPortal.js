@@ -13,7 +13,7 @@ const AdminPortal = () => {
 
   const fetchAllOrders = async () => {
     try {
-      const res = await axios.get('http://localhost:3000/api/admin/orders', {
+      const res = await axios.get('https://grocery-app-vktw.onrender.com/api/admin/orders', {
         withCredentials: true
       });
       setOrders(res.data.orders);
@@ -30,7 +30,7 @@ const AdminPortal = () => {
     
     try {
       const res = await axios.put(
-        `http://localhost:3000/api/orders/${orderId}/status`,
+        `https://grocery-app-vktw.onrender.com/api/orders/${orderId}/status`,
         { status: newStatus },
         { withCredentials: true }
       );

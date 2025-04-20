@@ -18,8 +18,8 @@ const Orders = () => {
     try {
       // Different endpoint based on user role
       const endpoint = user?.role === 'admin' 
-        ? 'http://localhost:3000/api/admin/orders' 
-        : 'http://localhost:3000/api/orders';
+        ? 'https://grocery-app-vktw.onrender.com/api/admin/orders' 
+        : 'https://grocery-app-vktw.onrender.com/api/orders';
       
       const res = await axios.get(endpoint, {
         withCredentials: true
@@ -37,7 +37,7 @@ const Orders = () => {
     setUpdatingOrderId(orderId);
     try {
       const res = await axios.put(
-        `http://localhost:3000/api/orders/${orderId}/status`,
+        `https://grocery-app-vktw.onrender.com/api/orders/${orderId}/status`,
         { status: newStatus },
         { withCredentials: true }
       );
@@ -132,14 +132,14 @@ const Orders = () => {
                   <div key={index} className="order-item">
                     <span className="product-name">{product.name}</span>
                     <span className="product-quantity">x{product.quantity}</span>
-                    <span className="product-price">${product.price.toFixed(2)}</span>
+                    <span className="product-price">Rs.{product.price.toFixed(2)}</span>
                   </div>
                 ))}
               </div>
               
               <div className="order-total">
                 <span>Total:</span>
-                <span>${order.totalAmount.toFixed(2)}</span>
+                <span>Rs.{order.totalAmount.toFixed(2)}</span>
               </div>
               
               <div className="order-actions">

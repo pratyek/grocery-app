@@ -83,7 +83,7 @@ const Cart = () => {
       
       // Create order
       await axios.post(
-        'http://localhost:3000/api/orders',
+        'https://grocery-app-vktw.onrender.com/api/orders',
         {
           products: orderProducts,
           totalAmount: total,

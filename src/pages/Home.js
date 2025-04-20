@@ -20,7 +20,7 @@ const Home = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get('http://localhost:3000/api/products');
+      const res = await axios.get('https://grocery-app-vktw.onrender.com/api/products');
       setProducts(res.data.products);
       setError('');
     } catch (error) {
@@ -33,7 +33,7 @@ const Home = () => {
 
   const handleDeleteProduct = async (productId) => {
     try {
-      await axios.delete(`http://localhost:3000/api/products/${productId}`, {
+      await axios.delete(`https://grocery-app-vktw.onrender.com/api/products/${productId}`, {
         withCredentials: true
       });
       
