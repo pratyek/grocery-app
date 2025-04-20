@@ -9,7 +9,7 @@ import Register from './pages/Register';
 import Home from './pages/Home';
 import Cart from './pages/Cart';
 import Orders from './pages/Orders';
-import AdminPortal from './pages/AdminPortal';
+//import AdminPortal from './pages/AdminPortal';
 import './App.css';
 
 // Protected route component

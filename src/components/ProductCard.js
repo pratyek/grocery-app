@@ -5,7 +5,7 @@ import { Leaf, Apple, Carrot, CircleDot, Wheat, ShoppingCart, Trash2 } from 'luc
 
 const ProductCard = ({ product, onDelete }) => {
   const { user } = useAuth();
-  const { addToCart } = useCart();
+  const { cartItems, addToCart, updateQuantity } = useCart();
   
   // Function to determine which icon to show based on product name
   const getProductIcon = (productName) => {
@@ -37,6 +37,8 @@ const ProductCard = ({ product, onDelete }) => {
   const handleAddToCart = () => {
     addToCart(product);
   };
+  const cartItem = cartItems.find(item => item._id === product._id);
+  const isInCart = !!cartItem;
   
   return (
     <div className="product-card">
