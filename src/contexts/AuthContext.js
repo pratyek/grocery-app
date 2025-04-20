@@ -1,131 +1,85 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+
+// contexts/AuthContext.js
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
 
-export function useAuth() {
-  return useContext(AuthContext);
-}
+export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [cart, setCart] = useState({ items: [] });
   const [loading, setLoading] = useState(true);
 
-  // Check if user is logged in on initial load
+  // Check if user is logged in on mount
   useEffect(() => {
-    const checkAuthStatus = async () => {
+    const checkUser = async () => {
       try {
-        const res = await axios.get('https://grocery-app-vktw.onrender.com/api/auth/current-user', {
-          withCredentials: true
-        });
-        
-        if (res.data.user) {
-          setUser(res.data.user);
-          // Also fetch cart if user is logged in
-          fetchCart();
+        const res = await axios.get('https://grocery-app-vktw.onrender.com/api/user', { withCredentials: true ,   headers: {
+          'Content-Type': 'application/json'
         }
+       });
+        setUser(res.data.user);
       } catch (error) {
-        console.error('Auth check error:', error);
         setUser(null);
       } finally {
         setLoading(false);
       }
     };
 
-    checkAuthStatus();
+    checkUser();
   }, []);
 
-  // Fetch user's cart
-  const fetchCart = async () => {
+  // Register user
+  
+  const register = async (userData) => {
     try {
-      const res = await axios.get('https://grocery-app-vktw.onrender.com/api/cart', {
-        withCredentials: true
-      });
-      setCart(res.data.cart);
-    } catch (error) {
-      console.error('Error fetching cart:', error);
-    }
-  };
-
-  // Login function
-  const login = async (email, password) => {
-    try {
-      const res = await axios.post(
-        'https://grocery-app-vktw.onrender.com/api/auth/login',
-        { email, password },
-        { withCredentials: true }
-      );
-      
+      console.log(userData);
+      const res = await axios.post('https://grocery-app-vktw.onrender.com/api/register', userData, { withCredentials: true ,   headers: {
+        'Content-Type': 'application/json'
+      }
+    });
       setUser(res.data.user);
-      await fetchCart(); // Get cart after login
-      return { success: true };
+      return res.data;
     } catch (error) {
-      console.error('Login error:', error);
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Login failed'
-      };
+      throw error.response.data;
     }
   };
 
-  // Register function
-  const register = async (name, email, password) => {
+  // Login user
+  const login = async (userData) => {
     try {
-      const res = await axios.post(
-        'https://grocery-app-vktw.onrender.com/api/auth/register',
-        { name, email, password },
-        { withCredentials: true }
-      );
-      
+      const res = await axios.post('https://grocery-app-vktw.onrender.com/api/login', userData, { withCredentials: true ,   headers: {
+        'Content-Type': 'application/json'
+      }
+     });
       setUser(res.data.user);
-      return { success: true };
+      return res.data;
     } catch (error) {
-      console.error('Registration error:', error);
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Registration failed'
-      };
+      throw error.response.data;
     }
   };
 
-  // Logout function
+  // Logout user
   const logout = async () => {
     try {
-      await axios.post(
-        'https://grocery-app-vktw.onrender.com/api/auth/logout',
-        {},
-        { withCredentials: true }
-      );
-      
+      await axios.post('https://grocery-app-vktw.onrender.com/api/logout', {}, { withCredentials: true ,   headers: {
+        'Content-Type': 'application/json'
+      }
+     });
       setUser(null);
-      setCart({ items: [] });
     } catch (error) {
       console.error('Logout error:', error);
     }
   };
 
-  // Update cart state
-  const updateCart = (newCart) => {
-    setCart(newCart);
-  };
-
   const value = {
     user,
     loading,
-    login,
     register,
-    logout,
-    cart,
-    updateCart,
-    fetchCart
+    login,
+    logout
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
-
-export default AuthContext;
