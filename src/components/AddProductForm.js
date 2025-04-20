@@ -59,7 +59,7 @@ const AddProductForm = ({ onProductAdded }) => {
     
     try {
       const res = await axios.post(
-        'http://localhost:3000/api/products',
+        'https://grocery-app-vktw.onrender.com/api/products',
         {
           ...productData,
           price: Number(productData.price)
