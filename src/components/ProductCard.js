@@ -1,69 +1,142 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useCart } from '../contexts/CartContext';
-import { Leaf, Apple, Carrot, CircleDot, Wheat, ShoppingCart, Trash2 } from 'lucide-react';
+import { ShoppingCart, Trash, Minus, Plus } from 'lucide-react';
+import axios from 'axios';
 
 const ProductCard = ({ product, onDelete }) => {
-  const { user } = useAuth();
-  const { addToCart } = useCart();
-  
-  // Function to determine which icon to show based on product name
-  const getProductIcon = (productName) => {
-    const name = productName.toLowerCase();
-    
-    if (name.includes('apple') || name.includes('mango') || name.includes('banana') || 
-        name.includes('fruit') || name.includes('berry') || name.includes('orange')) {
-      return <Apple size={48} color="#e74c3c" />;
+  const { user, cart, updateCart } = useAuth();
+  const [quantity, setQuantity] = useState(0);
+  const [isInCart, setIsInCart] = useState(false);
+
+  // Check if product is in cart and set initial quantity
+  useEffect(() => {
+    if (cart && cart.items) {
+      const cartItem = cart.items.find(item => item.product === product._id);
+      if (cartItem) {
+        setQuantity(cartItem.quantity);
+        setIsInCart(true);
+      } else {
+        setQuantity(0);
+        setIsInCart(false);
+      }
     }
-    
-    if (name.includes('carrot') || name.includes('potato') || name.includes('onion') || 
-        name.includes('tomato') || name.includes('pepper') || name.includes('root')) {
-      return <Carrot size={48} color="#e67e22" />;
+  }, [cart, product._id]);
+
+  const handleAddToCart = async () => {
+    try {
+      const response = await axios.post(
+        'https://grocery-app-vktw.onrender.com/api/cart/add',
+        {
+          productId: product._id,
+          quantity: 1
+        },
+        { withCredentials: true }
+      );
+      
+      updateCart(response.data.cart);
+      setQuantity(1);
+      setIsInCart(true);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      alert('Failed to add product to cart');
     }
-    
-    if (name.includes('spinach') || name.includes('lettuce') || name.includes('kale') || 
-        name.includes('green') || name.includes('leaf')) {
-      return <Leaf size={48} color="#27ae60" />;
-    }
-    
-    if (name.includes('broccoli') || name.includes('cauliflower') || name.includes('cabbage')) {
-      return <CircleDot size={48} color="#2ecc71" />;
-    }
-    
-    // Default icon for other vegetables
-    return <Wheat size={48} color="#f39c12" />;
   };
-  
-  const handleAddToCart = () => {
-    addToCart(product);
+
+  const handleUpdateQuantity = async (newQuantity) => {
+    // If new quantity is 0, remove from cart
+    if (newQuantity === 0) {
+      try {
+        const response = await axios.delete(
+          `https://grocery-app-vktw.onrender.com/api/cart/${product._id}`,
+          { withCredentials: true }
+        );
+        
+        updateCart(response.data.cart);
+        setIsInCart(false);
+      } catch (error) {
+        console.error('Error removing from cart:', error);
+        alert('Failed to remove product from cart');
+      }
+    } else {
+      // Update quantity
+      try {
+        const response = await axios.patch(
+          'https://grocery-app-vktw.onrender.com/api/cart/update',
+          {
+            productId: product._id,
+            quantity: newQuantity
+          },
+          { withCredentials: true }
+        );
+        
+        updateCart(response.data.cart);
+        setQuantity(newQuantity);
+      } catch (error) {
+        console.error('Error updating cart:', error);
+        alert('Failed to update cart');
+      }
+    }
   };
-  
+
+  const handleIncrement = () => {
+    handleUpdateQuantity(quantity + 1);
+  };
+
+  const handleDecrement = () => {
+    if (quantity > 0) {
+      handleUpdateQuantity(quantity - 1);
+    }
+  };
+
   return (
     <div className="product-card">
       <div className="product-image">
-        {getProductIcon(product.name)}
+        <img src={product.imageUrl} alt={product.name} />
       </div>
       
       <div className="product-info">
         <h3>{product.name}</h3>
-        <p className="product-description">{product.description}</p>
-        <p className="product-price">Rs. {product.price.toFixed(2)}</p>
+        <p className="price">${product.price.toFixed(2)} / {product.unit}</p>
+        <p className="description">{product.description}</p>
       </div>
       
       <div className="product-actions">
-        <button 
-          onClick={handleAddToCart}
-          className="add-to-cart-btn"
-        >
-          <ShoppingCart size={18} /> Add to Cart
-        </button>
+        {user && (
+          <div className="cart-actions">
+            {isInCart ? (
+              <div className="quantity-control">
+                <button 
+                  className="quantity-btn decrement" 
+                  onClick={handleDecrement}
+                >
+                  <Minus size={16} />
+                </button>
+                <span className="quantity">{quantity}</span>
+                <button 
+                  className="quantity-btn increment" 
+                  onClick={handleIncrement}
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
+            ) : (
+              <button 
+                className="add-to-cart-btn" 
+                onClick={handleAddToCart}
+              >
+                <ShoppingCart size={16} />
+                Add to Cart
+              </button>
+            )}
+          </div>
+        )}
         
         {user && user.role === 'admin' && (
           <button 
+            className="delete-btn" 
             onClick={() => onDelete(product._id)}
-            className="delete-product-btn"
           >
-            <Trash2 size={18} /> Delete
+            <Trash size={16} />
           </button>
         )}
       </div>
