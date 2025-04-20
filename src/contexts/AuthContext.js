@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const res = await axios.get('http://localhost:3000/api/user', { withCredentials: true ,   headers: {
+        const res = await axios.get('https://grocery-app-vktw.onrender.com/api/user', { withCredentials: true ,   headers: {
           'Content-Type': 'application/json'
         }
        });
@@ -31,10 +31,11 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Register user
+
   const register = async (userData) => {
     try {
       console.log(userData);
-      const res = await axios.post('http://localhost:3000/api/register', userData, { withCredentials: true ,   headers: {
+      const res = await axios.post('https://grocery-app-vktw.onrender.com/api/register', userData, { withCredentials: true ,   headers: {
         'Content-Type': 'application/json'
       }
     });
@@ -48,7 +49,7 @@ export const AuthProvider = ({ children }) => {
   // Login user
   const login = async (userData) => {
     try {
-      const res = await axios.post('http://localhost:3000/api/login', userData, { withCredentials: true ,   headers: {
+      const res = await axios.post('https://grocery-app-vktw.onrender.com/api/login', userData, { withCredentials: true ,   headers: {
         'Content-Type': 'application/json'
       }
      });
@@ -62,7 +63,7 @@ export const AuthProvider = ({ children }) => {
   // Logout user
   const logout = async () => {
     try {
-      await axios.post('http://localhost:3000/api/logout', {}, { withCredentials: true ,   headers: {
+      await axios.post('https://grocery-app-vktw.onrender.com/api/logout', {}, { withCredentials: true ,   headers: {
         'Content-Type': 'application/json'
       }
      });
